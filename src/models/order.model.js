@@ -1,16 +1,27 @@
-import {Schema, VirtualType, model} from "mongoose"
+import { Schema, model } from 'mongoose';
 
-const orderSchema = new Schema({
-    customer_id: {type: Schema.Types.ObjectId, ref: "customer", required:true},
-    delivery_staff_id: {type: Schema.Types.ObjectId, ref: "deliveryStaff", required: true},
-    order_date: {type: Date, default: Date.now()},
-    status: { 
-    type: String, 
-    enum: ["ordered", "cancelled", "pending"], 
-    default: "pending"                     
-  }
-}, {versionKey: false, timestamps: true})
+const orderSchema = new Schema(
+  {
+    customer_id: {
+      type: Schema.Types.ObjectId,
+      ref: 'customer',
+      required: true,
+    },
+    delivery_staff_id: {
+      type: Schema.Types.ObjectId,
+      ref: 'deliveryStaff',
+      required: true,
+    },
+    order_date: { type: Date, default: Date.now() },
+    status: {
+      type: String,
+      enum: ['ordered', 'cancelled', 'pending'],
+      default: 'pending',
+    },
+  },
+  { versionKey: false, timestamps: true },
+);
 
-const OrderModel = model("order", orderSchema)
+const OrderModel = model('order', orderSchema);
 
 export default OrderModel;
