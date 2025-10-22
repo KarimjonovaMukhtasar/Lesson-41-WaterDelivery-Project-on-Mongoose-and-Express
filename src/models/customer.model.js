@@ -1,9 +1,12 @@
-import { Schema, model } from "mongoose"
+import { Schema, model } from 'mongoose';
 
-const customerSchema = new Schema({
+const customerSchema = new Schema(
+  {
     name: { type: String, required: true },
-    phone: { type: String, required: true }
-}, { versionKey: false, timestamps: true })
-const CustomerModel = model("customer", customerSchema)
+    phone: { type: String, required: true },
+  },
+  { versionKey: false, timestamps: true },
+);
+const CustomerModel = model('customer', customerSchema);
 
 export default CustomerModel;
