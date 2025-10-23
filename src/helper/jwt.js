@@ -1,41 +1,19 @@
 import jwt from "jsonwebtoken"
 
-const secret = "Resilient1804"
-const command = process.argv[2]
-
-if(command === 'create'){
-    const expiresIn = {expiresIn: 60 * 60}
-const payload = {
-    id: 18,
-    name: "Mukhtasar",
-    role: "Student",
-    studentId: 35533
-}
-const token = jwt.sign(payload,secret, expiresIn)
-console.log({token})
-}
-else if (command === 'verify'){
-    const token = process.argv[3]
-    const decoded = jwt.verify(token, secret)
-    console.log(decoded);
-}
-const expiresIn = {expiresIn: 60 * 60}
-const payload = {
-    id: 18,
-    name: "Mukhtasar",
-    role: "Student",
-    studentId: 35533
-}
-const token = jwt.sign(payload,secret, expiresIn)
-
-console.log({token});
-
-function checkToken(token){
-    const decoded = jwt.verify(token, secret)
-    console.log(decoded);
-    
+export function generateToken(payload, secret, expiresIn){
+    try{
+        const token = jwt.sign(payload, secret, {expiresIn})
+    return token
+    }catch(e){
+        throw new Error(e)
+    }
 }
 
-setTimeout(() => {
-    checkToken(token)
-}, 5000);
+export function verifyToken(token, secret){
+    try{
+        const decoded = jwt.verify(token,secret)
+        return decoded
+    }catch(e){
+        throw new Error(e)
+    }
+}

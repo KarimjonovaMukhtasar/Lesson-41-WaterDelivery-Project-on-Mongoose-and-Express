@@ -1,6 +1,10 @@
-import "dotenv/config"
+import 'dotenv/config';
 
 export const config = {
-    accessSecret: process.env.JWT_ACCESSSECRET,
-    refreshSecret: process.env.JWT_REFRESHSECRET
-}
+  jwt: {
+    accessSecret: process.env.JWT_ACCESS_SECRET,
+    refreshSecret: process.env.JWT_REFRESH_SECRET,
+  },
+  app: { port: process.env.PORT},
+  db: { url: process.env.DB_URL}
+};
