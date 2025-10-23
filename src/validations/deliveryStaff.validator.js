@@ -18,6 +18,10 @@ export const deliveryStaffUpdate = z
       .max(10, 'Vehicle Number Too long')
       .trim()
       .optional(),
+    district_id: z
+      .string()
+      .regex(/^[0-9a-fA-F]{24}$/, 'Invalid district ID')
+      .optional(),
   })
   .strict();
 
@@ -35,5 +39,6 @@ export const deliveryStaffValidate = z
       .min(3, 'Vehicle Number Too short')
       .max(10, 'Vehicle Number Too long')
       .trim(),
+    district_id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid district ID'),
   })
   .strict();

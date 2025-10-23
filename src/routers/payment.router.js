@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import { validate } from '../validations/validations.js';
+import { validate } from '../middleware/validations.js';
 import {
   paymentValidate,
   paymentUpdate,
 } from '../validations/payment.validator.js';
 import {
   getAll,
-  getOne,
   updateOne,
+  getOne,
   createOne,
   deleteOne,
 } from '../controllers/payment.controller.js';

@@ -1,4 +1,4 @@
-import { Schema, VirtualType, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
 const PaymentSchema = new Schema(
   {

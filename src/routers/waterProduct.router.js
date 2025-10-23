@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { validate } from '../validations/validations.js';
+import { validate } from '../middleware/validations.js';
 import {
   waterProductValidate,
   waterProductUpdate,
@@ -10,7 +10,7 @@ import {
   updateOne,
   createOne,
   deleteOne,
-} from '../controllers/waterProduct.controller.js';
+} from '../controllers/waterProducts.controller.js';
 
 const router = Router();
 
