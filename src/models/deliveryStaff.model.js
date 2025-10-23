@@ -30,6 +30,12 @@ deliveryStaffSchema.pre('findByIdAndUpdate', async function(next) {
     }
     next();
 });
+
+deliveryStaffSchema.methods.comparePassword = async function (deliveryStaffPassword){
+  const isValidPassword = await bcrypt.compare(deliveryStaffPassword, this.password)
+  return isValidPassword
+};
+
 const DeliveryStaffModel = model('deliveryStaff', deliveryStaffSchema);
 
 export default DeliveryStaffModel;
