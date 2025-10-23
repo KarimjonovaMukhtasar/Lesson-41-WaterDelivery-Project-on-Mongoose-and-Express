@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { validate } from '../validations/validations.js';
+import { validate } from '../middleware/validations.js';
 import {
   orderItemValidate,
   orderItemUpdate,
@@ -10,7 +10,7 @@ import {
   updateOne,
   createOne,
   deleteOne,
-} from '../controllers/orderItem.controller.js';
+} from '../controllers/orderItems.controller.js';
 
 const router = Router();
 

@@ -1,4 +1,4 @@
-export const errorHandler = (req, res, error, next) => {
+export const errorHandler = (req, res, error) => {
   console.error(error.stack);
   return res
     .status(error.status || 500)

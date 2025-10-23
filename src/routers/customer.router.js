@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { validate } from '../validations/validations.js';
+import { validate } from '../middleware/validations.js';
 import {
   customerValidate,
   customerUpdate,

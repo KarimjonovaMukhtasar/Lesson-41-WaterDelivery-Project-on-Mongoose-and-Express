@@ -4,6 +4,6 @@ const districtSchema = new Schema({
   name: { type: String, required: true },
 });
 
-const districtModel = model('district', districtSchema);
+const DistrictModel = model('district', districtSchema);
 
-export default districtModel;
+export default DistrictModel;
