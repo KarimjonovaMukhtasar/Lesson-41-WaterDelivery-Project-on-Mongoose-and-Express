@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { validate } from '../middleware/validations.js';
+import { authGuard, roleGuard } from '../middleware/guard.middeware.js';
 import {
   orderItemValidate,
   orderItemUpdate,
@@ -14,10 +15,10 @@ import {
 
 const router = Router();
 
-router.get('/', getAll);
-router.get('/:id', getOne);
-router.post('/', validate(orderItemValidate), createOne);
-router.put('/:id', validate(orderItemUpdate), updateOne);
-router.delete('/:id', deleteOne);
+router.get('/', authGuard,  roleGuard('customer', 'manager', 'admin', 'staff'), getAll);
+router.get('/:id', authGuard, roleGuard('customer', 'manager', 'admin', 'staff'), getOne);
+router.post('/', authGuard, roleGuard('customer', 'manager', 'admin'), validate(orderItemValidate), createOne);
+router.put('/:id', authGuard, roleGuard('customer', 'manager', 'admin'), validate(orderItemUpdate), updateOne);
+router.delete('/:id', authGuard, roleGuard('customer', 'manager', 'admin'), deleteOne);
 
 export { router as orderItemRouter };

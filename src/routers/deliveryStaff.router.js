@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { validate } from '../middleware/validations.js';
+import { authGuard, roleGuard } from '../middleware/guard.middeware.js';
 import {
   deliveryStaffValidate,
   deliveryStaffUpdate,
@@ -14,10 +15,10 @@ import {
 
 const router = Router();
 
-router.get('/', getAll);
-router.get('/:id', getOne);
-router.post('/', validate(deliveryStaffValidate), createOne);
-router.put('/:id', validate(deliveryStaffUpdate), updateOne);
-router.delete('/:id', deleteOne);
+router.get('/', authGuard, roleGuard('manager','admin'), getAll);
+router.get('/:id', authGuard , roleGuard('manager','admin', 'staff'), getOne);
+router.post('/', roleGuard('staff', 'manager','admin'), validate(deliveryStaffValidate), createOne);
+router.put('/:id', authGuard, roleGuard('manager', 'admin', 'staff'), validate(deliveryStaffUpdate), updateOne);
+router.delete('/:id', authGuard, roleGuard('manager','admin', 'staff'), deleteOne);
 
 export { router as deliveryStaffRouter };
