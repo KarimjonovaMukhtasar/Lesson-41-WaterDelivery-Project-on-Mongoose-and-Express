@@ -1,5 +1,5 @@
 import { Schema, model } from 'mongoose';
-import bcrypt from "bcrypt"
+import bcrypt from 'bcrypt';
 
 const deliveryStaffSchema = new Schema(
   {
@@ -11,29 +11,35 @@ const deliveryStaffSchema = new Schema(
       ref: 'district',
       required: true,
     },
-    email: {type: String, required:true},
-    password: {type: String, required: true}
+    email: { type: String, required: true },
+    password: { type: String, required: true },
+    role: {type: String,  enum: ['staff'],  default: 'staff'}
   },
   { versionKey: false, timestamps: true },
 );
 
-deliveryStaffSchema.pre('save', async function(next) {
-    if (!this.isModified('password')) return next();
-    this.password = await bcrypt.hash(this.password, 10);
-    next();
+deliveryStaffSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
+  this.password = await bcrypt.hash(this.password, 10);
+  next();
 });
 
-deliveryStaffSchema.pre('findByIdAndUpdate', async function(next) {
-    const update = this.getUpdate();
-    if (update.password) {
-        update.password = await bcrypt.hash(update.password, 10);
-    }
-    next();
+deliveryStaffSchema.pre('findByIdAndUpdate', async function (next) {
+  const update = this.getUpdate();
+  if (update.password) {
+    update.password = await bcrypt.hash(update.password, 10);
+  }
+  next();
 });
 
-deliveryStaffSchema.methods.comparePassword = async function (deliveryStaffPassword){
-  const isValidPassword = await bcrypt.compare(deliveryStaffPassword, this.password)
-  return isValidPassword
+deliveryStaffSchema.methods.comparePassword = async function (
+  deliveryStaffPassword,
+) {
+  const isValidPassword = await bcrypt.compare(
+    deliveryStaffPassword,
+    this.password,
+  );
+  return isValidPassword;
 };
 
 const DeliveryStaffModel = model('deliveryStaff', deliveryStaffSchema);

@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { validate } from '../middleware/validations.js';
+import { authGuard, roleGuard } from '../middleware/guard.middeware.js';
 import {
   waterProductValidate,
   waterProductUpdate,
@@ -14,10 +15,10 @@ import {
 
 const router = Router();
 
-router.get('/', getAll);
-router.get('/:id', getOne);
-router.post('/', validate(waterProductValidate), createOne);
-router.put('/:id', validate(waterProductUpdate), updateOne);
-router.delete('/:id', deleteOne);
+router.get('/', authGuard, roleGuard('customer', 'manager', 'admin', 'staff'), getAll);
+router.get('/:id', authGuard, roleGuard('customer', 'manager', 'admin', 'staff'), getOne);
+router.post('/', authGuard, roleGuard('manager', 'admin'), validate(waterProductValidate), createOne);
+router.put('/:id', authGuard, roleGuard('manager', 'admin'), validate(waterProductUpdate), updateOne);
+router.delete('/:id', authGuard, roleGuard('admin'), deleteOne);
 
 export { router as waterProductRouter };

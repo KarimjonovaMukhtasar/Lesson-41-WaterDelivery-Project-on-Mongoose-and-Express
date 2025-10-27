@@ -9,8 +9,9 @@ export const customerValidate = z
       .trim()
       .regex(/^[a-zA-Z\s]+$/, 'Name must contain only letters and spaces'),
     phone: z.string().regex(/^\+\d{10,15}$/, 'Invalid phone number'),
-  })
-  .strict();
+    email: z.string().email(),
+    password: z.string().min(8, `TOO SHORT FOR A PASSWORD`).max(30, `TOO LONG FOR A PASSWORD`)
+  });
 
 export const customerUpdate = z
   .object({
@@ -25,5 +26,6 @@ export const customerUpdate = z
       .string()
       .regex(/^\+\d{10,15}$/, 'Invalid phone number')
       .optional(),
-  })
-  .strict();
+      email: z.string().email().optional(),
+    password: z.string().min(8, `TOO SHORT FOR A PASSWORD`).max(30, `TOO LONG FOR A PASSWORD`).optional()
+  });
