@@ -7,9 +7,9 @@ import { orderRouter } from './order.router.js';
 import { orderItemRouter } from './orderItem.router.js';
 import { paymentRouter } from './payment.router.js';
 import { waterProductRouter } from './waterProduct.router.js';
-import { loginCustomerRouter, loginStaffRouter} from './login.router.js';
-import { registerCustomerRouter, registerStaffRouter } from './register.router.js';
-import {profileCustomerRouter, profileStaffRouter, refreshCustomerRouter, refreshStaffRouter} from "./profile.router.js"
+import { loginCustomerRouter, loginStaffRouter} from './auth.router.js';
+import { registerCustomerRouter, registerStaffRouter } from './auth.router.js';
+import {profileCustomerRouter, profileStaffRouter, refreshCustomerRouter, refreshStaffRouter} from "./auth.router.js"
 
 const MainRouter = Router();
 MainRouter.use('/address', addressRouter);

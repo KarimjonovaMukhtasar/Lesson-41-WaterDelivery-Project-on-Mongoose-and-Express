@@ -1,24 +1,20 @@
 import { Router } from 'express';
 import { validate } from '../middleware/validations.js';
-import { authGuard, roleGuard } from '../middleware/guard.middeware.js';
+import { authGuard} from '../middleware/authGuard.js';
+import { roleGuard } from '../middleware/roleGuard.js';
+import { selfGuard } from '../middleware/selfGuard.js';
 import {
   orderItemValidate,
   orderItemUpdate,
 } from '../validations/orderItem.validator.js';
-import {
-  getAll,
-  getOne,
-  updateOne,
-  createOne,
-  deleteOne,
-} from '../controllers/orderItems.controller.js';
+import {OrderItemController} from '../controllers/orderItems.controller.js';
 
 const router = Router();
 
-router.get('/', authGuard,  roleGuard('customer', 'manager', 'admin', 'staff'), getAll);
-router.get('/:id', authGuard, roleGuard('customer', 'manager', 'admin', 'staff'), getOne);
-router.post('/', authGuard, roleGuard('customer', 'manager', 'admin'), validate(orderItemValidate), createOne);
-router.put('/:id', authGuard, roleGuard('customer', 'manager', 'admin'), validate(orderItemUpdate), updateOne);
-router.delete('/:id', authGuard, roleGuard('customer', 'manager', 'admin'), deleteOne);
+router.get('/', authGuard,  roleGuard('manager', 'admin', 'staff', 'customer'), OrderItemController.getAll);
+router.get('/:id', authGuard, roleGuard('manager', 'admin', 'staff', 'customer'), OrderItemController.getOne);
+router.post('/', authGuard, roleGuard( 'manager', 'admin', 'customer',), validate(orderItemValidate), OrderItemController.createOne);
+router.put('/:id', authGuard, selfGuard('manager', 'admin', 'customer'), validate(orderItemUpdate), OrderItemController.updateOne);
+router.delete('/:id', authGuard, selfGuard('manager', 'admin', 'customer'), OrderItemController.deleteOne);
 
 export { router as orderItemRouter };

@@ -6,7 +6,7 @@ const WaterProductSchema = new Schema(
     price: { type: Number, required: true },
     volume_liters: { type: String, required: true },
   },
-  { versionKey: false, timestamps: true },
+  { timestamps: true },
 );
 
 const WaterProductModel = model('waterProduct', WaterProductSchema);

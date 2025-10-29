@@ -1,16 +1,9 @@
 import AddressModel from '../models/address.model.js';
-export const getAll = async (req, res, next) => {
+import { ApiError } from '../helper/errorMessage.js';
+export const AddressController = {
+  getAll: async (req, res, next) => {
     try {
       const model = AddressModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            AddressModel,
-          });
-      }
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
       const search = req.query.search || '';
@@ -25,8 +18,15 @@ export const getAll = async (req, res, next) => {
             })),
           }
         : {};
+      if (req.user.role !== 'admin') {
+        query.customer_id = req.user.id;
+      }
       const [data, total] = await Promise.all([
-        model.find(query).skip(skip).limit(limit).sort({ createdAt: -1 }),
+        model
+          .find({ ...query})
+          .skip(skip)
+          .limit(limit)
+          .sort({ createdAt: -1 }),
         model.countDocuments(query),
       ]);
       return res.status(200).json({
@@ -40,28 +40,15 @@ export const getAll = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
+  },
 
-export const getOne = async (req, res, next) => {
+  getOne: async (req, res, next) => {
     try {
       const model = AddressModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            AddressModel,
-          });
-      }
       const { id } = req.params;
-      const data = await model.findOne({ _id: id });
+      const data = await model.findOne({ _id: id, customer_id: req.user.id });
       if (!data) {
-        return res.status(404).json({
-          success: false,
-          message: `NOT FOUND SUCH AN ID`,
-          id,
-        });
+        return next(new ApiError(404, `NOT FOUND SUCH AN ID!`));
       }
       return res.status(200).json({
         success: true,
@@ -71,20 +58,11 @@ export const getOne = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
+  },
 
-export const createOne = async (req, res, next) => {
+  createOne: async (req, res, next) => {
     try {
       const model = AddressModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            AddressModel,
-          });
-      }
       const body = req.validatedData;
       const data = await model.create(body);
       return res.status(201).json({
@@ -95,29 +73,16 @@ export const createOne = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
+  },
 
-export const updateOne = async (req, res, next) => {
+  updateOne: async (req, res, next) => {
     try {
       const model = AddressModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            AddressModel,
-          });
-      }
       const { id } = req.params;
       const body = req.validatedData;
       const data = await model.findByIdAndUpdate(id, body, { new: true });
       if (!data) {
-        return res.status(404).json({
-          success: false,
-          message: `NOT FOUND SUCH AN ID`,
-          id,
-        });
+        return next(new ApiError(404, `NOT FOUND SUCH AN ID!`));
       }
       return res.status(200).json({
         success: true,
@@ -127,28 +92,15 @@ export const updateOne = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
+  },
 
-export const deleteOne = async(req, res, next) => {
+  deleteOne: async (req, res, next) => {
     try {
       const model = AddressModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            AddressModel,
-          });
-      }
       const { id } = req.params;
       const data = await model.findByIdAndDelete({ _id: id });
       if (!data) {
-        return res.status(404).json({
-          success: false,
-          message: `NOT FOUND SUCH AN ID`,
-          id,
-        });
+        return next(new ApiError(404, `NOT FOUND SUCH AN ID!`));
       }
       return res.status(200).json({
         success: true,
@@ -158,6 +110,5 @@ export const deleteOne = async(req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
-
-
+  }
+};

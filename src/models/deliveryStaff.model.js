@@ -15,7 +15,7 @@ const deliveryStaffSchema = new Schema(
     password: { type: String, required: true },
     role: {type: String,  enum: ['staff'],  default: 'staff'}
   },
-  { versionKey: false, timestamps: true },
+  { timestamps: true },
 );
 
 deliveryStaffSchema.pre('save', async function (next) {
