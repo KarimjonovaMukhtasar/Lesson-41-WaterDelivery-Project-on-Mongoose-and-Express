@@ -1,5 +1,18 @@
 import { z } from 'zod';
-export const orderValidate = z
+ const orderItemValidate = z
+  .object({
+    order_id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid order ID'),
+    product_id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid product ID'),
+    quantity: z.number().positive('Must be greater than 0'),
+    total_price: z
+      .number()
+      .positive('Must be greater than 0')
+      .min(0.01)
+      .optional(),
+  })
+  .strict();
+
+ const orderValidate = z
   .object({
     customer_id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid customer ID'),
     delivery_staff_id: z
@@ -14,7 +27,14 @@ export const orderValidate = z
   })
   .strict();
 
-export const orderUpdate = z
+export const orderWithItemsValidate = z.object({
+  order: orderValidate,
+  order_items: z
+    .array(orderItemValidate)
+    .min(1, 'At least one product must be added'),
+})
+
+const orderUpdate = z
   .object({
     customer_id: z
       .string()
@@ -32,3 +52,28 @@ export const orderUpdate = z
     status: z.enum(['pending', 'ordered', 'cancelled']).optional(),
   })
   .strict();
+
+
+const orderItemUpdate = z
+    .object({
+      order_id: z
+        .string()
+        .regex(/^[0-9a-fA-F]{24}$/, 'Invalid order ID')
+        .optional(),
+      product_id: z
+        .string()
+        .regex(/^[0-9a-fA-F]{24}$/, 'Invalid product ID')
+        .optional(),
+      quantity: z.number().positive('Must be greater than 0').optional(),
+      total_price: z
+        .number()
+        .positive('Must be greater than 0')
+        .min(0.01)
+        .optional(),
+    })
+    .strict();
+
+export const orderWithItemsUpdate = z.object({
+  order: orderUpdate.partial(), 
+  order_items: z.array(orderItemUpdate.partial()).optional()
+})

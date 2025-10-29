@@ -1,10 +1,10 @@
 import express from 'express';
-import { errorHandler } from './src/middleware/errorHandler.js';
-import { dbconnect } from './src/db/index.js';
-import { config } from './src/config/index.js';
+import { errorHandler } from './middleware/errorHandler.js';
+import { dbconnect } from './db/index.js';
+import { config } from './config/index.js';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
-import MainRouter from './src/routers/index.js';
+import MainRouter from './routers/index.js';
 
 dotenv.config();
 

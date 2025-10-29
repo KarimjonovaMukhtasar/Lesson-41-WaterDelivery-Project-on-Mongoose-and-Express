@@ -2,9 +2,9 @@
   "name": "lesson-41-mongodb-express-homework-mongoose",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "src/app.js",
   "scripts": {
-    "start:dev": "node --watch app.js",
+    "start:dev": "node --watch src/app.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "npx prettier . --write",
