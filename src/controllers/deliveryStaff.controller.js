@@ -75,11 +75,7 @@ export const DeliveryStaffController = {
       const body = req.validatedData;
       const data = await model.findByIdAndUpdate(id, body, { new: true });
       if (!data) {
-        return res.status(404).json({
-          success: false,
-          message: `NOT FOUND SUCH AN ID`,
-          id,
-        });
+        return next(new ApiError(404, `NOT FOUND SUCH AN ID`))
       }
       return res.status(200).json({
         success: true,
@@ -97,11 +93,7 @@ deleteOne : async(req, res, next) => {
       const { id } = req.params;
       const data = await model.findByIdAndDelete(id);
       if (!data) {
-        return res.status(404).json({
-          success: false,
-          message: `NOT FOUND SUCH AN ID`,
-          id,
-        });
+        return next(new ApiError(404, `NOT FOUND SUCH AN ID`))
       }
       return res.status(200).json({
         success: true,

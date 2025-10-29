@@ -10,8 +10,10 @@ import { waterProductRouter } from './waterProduct.router.js';
 import { loginCustomerRouter, loginStaffRouter} from './auth.router.js';
 import { registerCustomerRouter, registerStaffRouter } from './auth.router.js';
 import {profileCustomerRouter, profileStaffRouter, refreshCustomerRouter, refreshStaffRouter} from "./auth.router.js"
+import {verifyOtp} from "./auth.router.js"
 
 const MainRouter = Router();
+
 MainRouter.use('/address', addressRouter);
 MainRouter.use('/customer', customerRouter);
 MainRouter.use('/delivery-staff', deliveryStaffRouter);
@@ -28,5 +30,6 @@ MainRouter.use('/register-staff', registerStaffRouter);
 MainRouter.use('/profile-staff', profileStaffRouter);
 MainRouter.use('/refresh-customer', refreshCustomerRouter);
 MainRouter.use('/refresh-staff', refreshStaffRouter);
+MainRouter.use("/verify", verifyOtp)
 
 export default MainRouter;

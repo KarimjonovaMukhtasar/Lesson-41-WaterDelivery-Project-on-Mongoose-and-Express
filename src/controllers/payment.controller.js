@@ -1,6 +1,7 @@
 import PaymentModel from '../models/payment.model.js';
-export const PaymentController = {
+import { ApiError } from '../helper/errorMessage.js';
 
+export const PaymentController = {
   getAll: async (req, res, next) => {
     try {
       const model = PaymentModel;
@@ -41,11 +42,7 @@ export const PaymentController = {
       const { id } = req.params;
       const data = await model.findOne({ _id: id });
       if (!data) {
-        return res.status(404).json({
-          success: false,
-          message: `NOT FOUND SUCH AN ID`,
-          id,
-        });
+        return next(new ApiError(404,`NOT FOUND SUCH AN ID` ))
       }
       return res.status(200).json({
         success: true,
@@ -79,11 +76,7 @@ export const PaymentController = {
       const body = req.validatedData;
       const data = await model.findByIdAndUpdate(id, body, { new: true });
       if (!data) {
-        return res.status(404).json({
-          success: false,
-          message: `NOT FOUND SUCH AN ID`,
-          id,
-        });
+        return next(new ApiError(404,`NOT FOUND SUCH AN ID` ))
       }
       return res.status(200).json({
         success: true,
@@ -101,11 +94,7 @@ export const PaymentController = {
       const { id } = req.params;
       const data = await model.findByIdAndDelete({ _id: id });
       if (!data) {
-        return res.status(404).json({
-          success: false,
-          message: `NOT FOUND SUCH AN ID`,
-          id,
-        });
+        return next(new ApiError(404,`NOT FOUND SUCH AN ID` ))
       }
       return res.status(200).json({
         success: true,

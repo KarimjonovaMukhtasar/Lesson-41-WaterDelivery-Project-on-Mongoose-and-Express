@@ -52,11 +52,7 @@ export const OrderController = {
         customer_id: req.user.customer_id,
       });
       if (!data) {
-        return res.status(404).json({
-          success: false,
-          message: `NOT FOUND SUCH AN ID`,
-          id,
-        });
+        return next(new ApiError(404,`NOT FOUND SUCH AN ID` ))
       }
       return res.status(200).json({
         success: true,
@@ -90,10 +86,10 @@ export const OrderController = {
         _id: order_items.product_id,
       });
       if (!productId) {
-        return next(new ApiError(404), `NOT FOUND SUCH A PRODUCT ID!`);
+        return next(new ApiError(404, `NOT FOUND SUCH A PRODUCT ID!`));
       }
       if (productId.quantity < order_items.quantity) {
-        return next(new ApiError(404), `NOT ENOUGH PRODUCTS AS REQUIRED`);
+        return next(new ApiError(404, `NOT ENOUGH PRODUCTS AS REQUIRED`));
       }
       productId.order_id = newOrder._id
       productId.quantity = productId.quantity - order_items.quantity;
@@ -125,11 +121,7 @@ export const OrderController = {
       const body = req.validatedData;
       const data = await model.findByIdAndUpdate(id, body, { new: true });
       if (!data) {
-        return res.status(404).json({
-          success: false,
-          message: `NOT FOUND SUCH AN ID`,
-          id,
-        });
+       return next(new ApiError(404,`NOT FOUND SUCH AN ID` ))
       }
       return res.status(200).json({
         success: true,
@@ -147,11 +139,7 @@ export const OrderController = {
       const { id } = req.params;
       const data = await model.findByIdAndDelete({ _id: id });
       if (!data) {
-        return res.status(404).json({
-          success: false,
-          message: `NOT FOUND SUCH AN ID`,
-          id,
-        });
+       return next(new ApiError(404,`NOT FOUND SUCH AN ID` ))
       }
       return res.status(200).json({
         success: true,

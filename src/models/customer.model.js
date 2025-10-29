@@ -1,5 +1,6 @@
 import { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
+import { boolean } from 'zod';
 
 const customerSchema = new Schema(
   {
@@ -7,7 +8,8 @@ const customerSchema = new Schema(
     phone: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    role: {type: String,  enum: ['customer'],  default: 'customer'}
+    role: {type: String,  enum: ['customer'],  default: 'customer'},
+    isActive: {type: boolean,  default: false}
   },
   { timestamps: true },
 );

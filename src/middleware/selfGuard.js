@@ -1,7 +1,7 @@
 export function selfGuard(data) {
   return (req, res, next) => {
     try{
-        const { id } = req.params;
+    const { id } = req.params;
     const { role } = req.user;
     if (id == req.user.id || data.includes(role)) {
       next();
