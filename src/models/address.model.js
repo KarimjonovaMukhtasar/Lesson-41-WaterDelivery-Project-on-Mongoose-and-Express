@@ -16,7 +16,7 @@ const AddressSchema = new Schema(
       required: true,
     },
   },
-  { versionKey: false, timestamps: true },
+  { timestamps: true },
 );
 
 const AddressModel = model('address', AddressSchema);

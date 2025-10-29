@@ -10,7 +10,7 @@ const PaymentSchema = new Schema(
       enum: ['cash', 'credit'],
     },
   },
-  { versionKey: false, timestamps: true },
+  {timestamps: true },
 );
 
 const PaymentModel = model('payment', PaymentSchema);

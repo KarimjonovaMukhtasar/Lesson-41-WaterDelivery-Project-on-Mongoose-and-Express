@@ -1,16 +1,10 @@
 import DeliveryStaffModel from '../models/deliveryStaff.model.js';
-export const getAll = async (req, res, next) => {
-    try {
+import { ApiError } from '../helper/errorMessage.js';
+
+export const DeliveryStaffController = {
+    getAll: async (req, res, next) => {
+      try {
       const model = DeliveryStaffModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            DeliveryStaffModel,
-          });
-      }
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
       const search = req.query.search || '';
@@ -40,28 +34,14 @@ export const getAll = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
-
-export const getOne = async (req, res, next) => {
+  }, 
+  getOne: async (req, res, next) => {
     try {
       const model = DeliveryStaffModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            DeliveryStaffModel,
-          });
-      }
       const { id } = req.params;
       const data = await model.findOne({ _id: id });
       if (!data) {
-        return res.status(404).json({
-          success: false,
-          message: `NOT FOUND SUCH AN ID`,
-          id,
-        });
+        return next(new ApiError(404, `NOT FOUND SUCH AN ID` ))
       }
       return res.status(200).json({
         success: true,
@@ -71,9 +51,8 @@ export const getOne = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
-
-export const createOne = async (req, res, next) => {
+  },
+  createOne = async (req, res, next) => {
     try {
       const model = DeliveryStaffModel;
       if (!model) {
@@ -158,6 +137,4 @@ export const deleteOne = async(req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
-
-
+  }}

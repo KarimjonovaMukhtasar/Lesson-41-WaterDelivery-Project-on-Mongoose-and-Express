@@ -7,7 +7,7 @@ const OrderItemSchema = new Schema(
     quantity: { type: Number, required: true },
     total_price: { type: Number, default: 0.01 },
   },
-  { versionKey: false, timestamps: true },
+  { timestamps: true },
 );
 
 const OrderItemModel = model('orderItem', OrderItemSchema);

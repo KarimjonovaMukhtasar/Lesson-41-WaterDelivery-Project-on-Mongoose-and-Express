@@ -21,13 +21,8 @@
 export function validate(schema) {
   return (req, res, next) => {
     try {
-      console.log('VALIDATION MIDDLEWARE START');
-      console.log('req.body:', req.body);
-
-      const result = schema.safeParse(req.body);
-
+     const result = schema.safeParse(req.body);
       if (!result.success) {
-        console.log('VALIDATION FAILED:', result.error.format());
         return res.status(400).json({
           success: false,
           message: 'Validation failed',
@@ -37,12 +32,9 @@ export function validate(schema) {
           })),
         });
       }
-
       req.validatedData = result.data;
-      console.log('VALIDATION PASSED → req.validatedData:', req.validatedData);
       next();
     } catch (error) {
-      console.error('VALIDATION CRASH:', error);
       next(error);
     }
   };

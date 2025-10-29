@@ -19,7 +19,7 @@ const orderSchema = new Schema(
       default: 'pending',
     },
   },
-  { versionKey: false, timestamps: true },
+  {timestamps: true },
 );
 
 const OrderModel = model('order', orderSchema);

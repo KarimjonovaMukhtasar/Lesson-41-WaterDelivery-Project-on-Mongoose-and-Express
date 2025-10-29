@@ -9,7 +9,7 @@ const customerSchema = new Schema(
     password: { type: String, required: true },
     role: {type: String,  enum: ['customer'],  default: 'customer'}
   },
-  { versionKey: false, timestamps: true },
+  { timestamps: true },
 );
 
 customerSchema.pre('save', async function (next) {
