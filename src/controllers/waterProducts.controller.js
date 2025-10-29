@@ -1,16 +1,8 @@
 import WaterProductModel from '../models/waterProducts.model.js';
-export const getAll = async (req, res, next) => {
+export const WaterProductController = {
+  getAll: async (req, res, next) => {
     try {
       const model = WaterProductModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            WaterProductModel,
-          });
-      }
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
       const search = req.query.search || '';
@@ -40,20 +32,11 @@ export const getAll = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
+  },
 
-export const getOne = async (req, res, next) => {
+   getOne : async (req, res, next) => {
     try {
       const model = WaterProductModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            WaterProductModel,
-          });
-      }
       const { id } = req.params;
       const data = await model.findOne({ _id: id });
       if (!data) {
@@ -71,20 +54,11 @@ export const getOne = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
+  },
 
-export const createOne = async (req, res, next) => {
+   createOne : async (req, res, next) => {
     try {
       const model = WaterProductModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            WaterProductModel,
-          });
-      }
       const body = req.validatedData;
       const data = await model.create(body);
       return res.status(201).json({
@@ -95,20 +69,11 @@ export const createOne = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
+  },
 
-export const updateOne = async (req, res, next) => {
+ updateOne : async (req, res, next) => {
     try {
       const model = WaterProductModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            WaterProductModel,
-          });
-      }
       const { id } = req.params;
       const body = req.validatedData;
       const data = await model.findByIdAndUpdate(id, body, { new: true });
@@ -127,20 +92,11 @@ export const updateOne = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
-
-export const deleteOne = async(req, res, next) => {
+  },
+  
+  deleteOne : async(req, res, next) => {
     try {
       const model = WaterProductModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            WaterProductModel,
-          });
-      }
       const { id } = req.params;
       const data = await model.findByIdAndDelete({ _id: id });
       if (!data) {
@@ -158,7 +114,7 @@ export const deleteOne = async(req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
+  }}
 
 
 

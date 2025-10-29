@@ -1,16 +1,8 @@
 import OrderItemModel from '../models/orderItem.model.js';
-export const getAll = async (req, res, next) => {
+export const OrderItemController = {
+  getAll: async (req, res, next) => {
     try {
       const model = OrderItemModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            OrderItemModel,
-          });
-      }
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
       const search = req.query.search || '';
@@ -26,7 +18,7 @@ export const getAll = async (req, res, next) => {
           }
         : {};
       const [data, total] = await Promise.all([
-        model.find(query).skip(skip).limit(limit).sort({ createdAt: -1 }),
+        model.find(query).populate('order').exec().skip(skip).limit(limit).sort({ createdAt: -1 }),
         model.countDocuments(query),
       ]);
       return res.status(200).json({
@@ -40,20 +32,11 @@ export const getAll = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
+  },
 
-export const getOne = async (req, res, next) => {
+  getOne: async (req, res, next) => {
     try {
       const model = OrderItemModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            OrderItemModel,
-          });
-      }
       const { id } = req.params;
       const data = await model.findOne({ _id: id });
       if (!data) {
@@ -71,20 +54,11 @@ export const getOne = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
+  },
 
-export const createOne = async (req, res, next) => {
+  createOne: async (req, res, next) => {
     try {
       const model = OrderItemModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            OrderItemModel,
-          });
-      }
       const body = req.validatedData;
       const data = await model.create(body);
       return res.status(201).json({
@@ -95,20 +69,11 @@ export const createOne = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
+  },
 
-export const updateOne = async (req, res, next) => {
+  updateOne: async (req, res, next) => {
     try {
       const model = OrderItemModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            OrderItemModel,
-          });
-      }
       const { id } = req.params;
       const body = req.validatedData;
       const data = await model.findByIdAndUpdate(id, body, { new: true });
@@ -127,20 +92,11 @@ export const updateOne = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
+  },
 
-export const deleteOne = async(req, res, next) => {
+  deleteOne: async (req, res, next) => {
     try {
       const model = OrderItemModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            OrderItemModel,
-          });
-      }
       const { id } = req.params;
       const data = await model.findByIdAndDelete({ _id: id });
       if (!data) {
@@ -158,6 +114,5 @@ export const deleteOne = async(req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
-
-
+  },
+};

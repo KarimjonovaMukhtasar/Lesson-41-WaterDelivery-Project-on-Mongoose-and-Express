@@ -1,16 +1,14 @@
 import OrderModel from '../models/order.model.js';
-export const getAll = async (req, res, next) => {
+import { orderMailer } from '../helper/nodeMailer.js';
+import mongoose from 'mongoose';
+import CustomerModel from '../models/customer.model.js';
+import { ApiError } from '../helper/errorMessage.js';
+import DeliveryStaffModel from '../models/deliveryStaff.model.js';
+import WaterProductModel from '../models/waterProducts.model.js';
+export const OrderController = {
+  getAll: async (req, res, next) => {
     try {
       const model = OrderModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            OrderModel,
-          });
-      }
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
       const search = req.query.search || '';
@@ -25,6 +23,9 @@ export const getAll = async (req, res, next) => {
             })),
           }
         : {};
+      if (req.user.role === 'customer') {
+        query.customer_id = req.user.id;
+      }
       const [data, total] = await Promise.all([
         model.find(query).skip(skip).limit(limit).sort({ createdAt: -1 }),
         model.countDocuments(query),
@@ -40,22 +41,16 @@ export const getAll = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
+  },
 
-export const getOne = async (req, res, next) => {
+  getOne: async (req, res, next) => {
     try {
       const model = OrderModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            OrderModel,
-          });
-      }
       const { id } = req.params;
-      const data = await model.findOne({ _id: id });
+      const data = await model.findOne({
+        _id: id,
+        customer_id: req.user.customer_id,
+      });
       if (!data) {
         return res.status(404).json({
           success: false,
@@ -71,44 +66,61 @@ export const getOne = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
+  },
 
-export const createOne = async (req, res, next) => {
+  createOne: async (req, res, next) => {
+    const session = mongoose.startSession();
     try {
-      const model = OrderModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            OrderModel,
-          });
+      await session.startTransaction();
+      const { order, order_items } = req.validatedData;
+      const customerId = await CustomerModel.findById({
+        _id: order.customer_id,
+      });
+      if (!customerId) {
+        return next(new ApiError(404, `NOT FOUND SUCH A CUSTOMER ID!`));
       }
-      const body = req.validatedData;
-      const data = await model.create(body);
+      const deliveryStaffId = await DeliveryStaffModel.findById({
+        _id: order.delivery_staff_id,
+      });
+      if (!deliveryStaffId) {
+        return next(new ApiError(404, `NOT FOUND SUCH A DELIVERY STAFF ID!`));
+      }
+      const newOrder = await OrderModel.create([order], { session });
+      const productId = await WaterProductModel.findById({
+        _id: order_items.product_id,
+      });
+      if (!productId) {
+        return next(new ApiError(404), `NOT FOUND SUCH A PRODUCT ID!`);
+      }
+      if (productId.quantity < order_items.quantity) {
+        return next(new ApiError(404), `NOT ENOUGH PRODUCTS AS REQUIRED`);
+      }
+      productId.order_id = newOrder._id
+      productId.quantity = productId.quantity - order_items.quantity;
+      productId.total_price = parseInt(order_items.quantity) * productId.price;
+      await productId.save();
+      newOrder.status = `ordered`;
+      await newOrder.save();
+      await orderMailer(customerId.email, `ORDERED SUCCESSFULLY!`);
+      await session.commitTransaction();
+      await session.endSession();
       return res.status(201).json({
         success: true,
-        message: `CREATED SUCCESSFULLY!`,
-        data,
+        message: `ORDER CREATED SUCCESSFULLY!`,
+        order: newOrder[0],
+        order_items: productId,
       });
     } catch (error) {
+      await orderMailer(req.user.email, `ORDERED SUCCESSFULLY!`);
+      await session.abortTransaction();
+      await session.endSession();
       return next(error);
     }
-  };
+  },
 
-export const updateOne = async (req, res, next) => {
+  updateOne: async (req, res, next) => {
     try {
       const model = OrderModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            OrderModel,
-          });
-      }
       const { id } = req.params;
       const body = req.validatedData;
       const data = await model.findByIdAndUpdate(id, body, { new: true });
@@ -127,20 +139,11 @@ export const updateOne = async (req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
+  },
 
-export const deleteOne = async(req, res, next) => {
+  deleteOne: async (req, res, next) => {
     try {
       const model = OrderModel;
-      if (!model) {
-        return res
-          .status(404)
-          .json({
-            success: false,
-            message: `NOT FOUND SUCH A MODEL NAME!`,
-            OrderModel,
-          });
-      }
       const { id } = req.params;
       const data = await model.findByIdAndDelete({ _id: id });
       if (!data) {
@@ -158,6 +161,5 @@ export const deleteOne = async(req, res, next) => {
     } catch (error) {
       return next(error);
     }
-  };
-
-
+  },
+};
