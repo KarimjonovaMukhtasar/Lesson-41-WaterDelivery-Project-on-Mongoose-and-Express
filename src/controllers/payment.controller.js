@@ -19,6 +19,9 @@ export const PaymentController = {
             })),
           }
         : {};
+      if(req.user.role === 'customer'){
+        query.customer_id = req.user.id
+      }
       const [data, total] = await Promise.all([
         model.find(query).skip(skip).limit(limit).sort({ createdAt: -1 }),
         model.countDocuments(query),

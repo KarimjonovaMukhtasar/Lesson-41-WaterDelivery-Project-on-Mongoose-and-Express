@@ -18,7 +18,7 @@ export const AddressController = {
             })),
           }
         : {};
-      if (req.user.role !== 'admin') {
+      if (req.user.role === 'customer') {
         query.customer_id = req.user.id;
       }
       const [data, total] = await Promise.all([

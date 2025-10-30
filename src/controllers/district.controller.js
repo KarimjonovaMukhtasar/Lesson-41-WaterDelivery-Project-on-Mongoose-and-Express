@@ -1,7 +1,7 @@
 import DistrictModel from '../models/district.model.js';
 import { ApiError } from '../helper/errorMessage.js';
 export const DistrictController = {
-    getAll: async (req, res, next) => {
+  getAll: async (req, res, next) => {
     try {
       const model = DistrictModel;
       const page = parseInt(req.query.page) || 1;
@@ -18,6 +18,9 @@ export const DistrictController = {
             })),
           }
         : {};
+      if (req.user.role === 'customer') {
+        query.customer_id = req.user.id;
+      }
       const [data, total] = await Promise.all([
         model.find(query).skip(skip).limit(limit).sort({ createdAt: -1 }),
         model.countDocuments(query),
@@ -34,14 +37,14 @@ export const DistrictController = {
       return next(error);
     }
   },
-  
+
   getOne: async (req, res, next) => {
     try {
       const model = DistrictModel;
       const { id } = req.params;
       const data = await model.findOne({ _id: id });
       if (!data) {
-        return next(new ApiError(404, `NOT FOUND SUCH AN ID` ))
+        return next(new ApiError(404, `NOT FOUND SUCH AN ID`));
       }
       return res.status(200).json({
         success: true,
@@ -52,8 +55,8 @@ export const DistrictController = {
       return next(error);
     }
   },
-  
-  createOne :  async (req, res, next) => {
+
+  createOne: async (req, res, next) => {
     try {
       const model = DistrictModel;
       const body = req.validatedData;
@@ -67,7 +70,7 @@ export const DistrictController = {
       return next(error);
     }
   },
- 
+
   updateOne: async (req, res, next) => {
     try {
       const model = DistrictModel;
@@ -75,7 +78,7 @@ export const DistrictController = {
       const body = req.validatedData;
       const data = await model.findByIdAndUpdate(id, body, { new: true });
       if (!data) {
-        return next(new ApiError(404,`NOT FOUND SUCH AN ID` ))
+        return next(new ApiError(404, `NOT FOUND SUCH AN ID`));
       }
       return res.status(200).json({
         success: true,
@@ -86,14 +89,14 @@ export const DistrictController = {
       return next(error);
     }
   },
-  
-  deleteOne : async(req, res, next) => {
+
+  deleteOne: async (req, res, next) => {
     try {
       const model = DistrictModel;
       const { id } = req.params;
       const data = await model.findByIdAndDelete({ _id: id });
       if (!data) {
-        return next(new ApiError(404,`NOT FOUND SUCH AN ID` ))
+        return next(new ApiError(404, `NOT FOUND SUCH AN ID`));
       }
       return res.status(200).json({
         success: true,
@@ -103,7 +106,5 @@ export const DistrictController = {
     } catch (error) {
       return next(error);
     }
-  }}
-
-
-
+  },
+};
