@@ -6,7 +6,7 @@ import morgan from './middleware/requestLogger.js';
 import requestId from './middleware/requestId.js';
 import dotenv from 'dotenv';
 import MainRouter from './routers/index.js';
-import {logger} from "./utils/logger.js"
+import logger from "./utils/logger.js"
 
 dotenv.config();
 

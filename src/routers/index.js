@@ -9,8 +9,8 @@ import { paymentRouter } from './payment.router.js';
 import { waterProductRouter } from './waterProduct.router.js';
 import { loginRouter} from './auth.router.js';
 import { registerRouter } from './auth.router.js';
-import { profileRouter, refreshAccessRouter} from "./auth.router.js"
-import {verifyOtp} from "./auth.router.js"
+import { profileRouter, refreshRouter} from "./auth.router.js"
+import {verifyOtp} from "../controllers/auth.controller.js"
 
 const MainRouter = Router();
 
@@ -25,7 +25,7 @@ MainRouter.use('/water-product', waterProductRouter);
 MainRouter.use('/login', loginRouter);
 MainRouter.use('/register', registerRouter);
 MainRouter.use('/profile', profileRouter);
-MainRouter.use('/refresh', refreshAccessRouter);
-MainRouter.use("/verify", verifyOtp)
+MainRouter.use('/refresh', refreshRouter);
+MainRouter.use("/verify", verifyOtp);
 
 export default MainRouter;

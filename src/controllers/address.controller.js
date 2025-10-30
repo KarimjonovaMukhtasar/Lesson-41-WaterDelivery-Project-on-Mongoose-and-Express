@@ -1,6 +1,6 @@
 import AddressModel from '../models/address.model.js';
 import { ApiError } from '../helper/errorMessage.js';
-import {logger} from "../utils/logger.js"
+import logger from "../utils/logger.js"
 
 export const AddressController = {
   getAll: async (req, res, next) => {
