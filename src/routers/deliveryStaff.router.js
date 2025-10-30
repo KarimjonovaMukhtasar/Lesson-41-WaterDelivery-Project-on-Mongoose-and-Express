@@ -2,8 +2,6 @@ import { Router } from 'express';
 import { validate } from '../middleware/validations.js';
 import { authGuard} from '../middleware/authGuard.js';
 import { roleGuard } from '../middleware/roleGuard.js';
-import { selfGuard } from '../middleware/selfGuard.js';
-
 import {
   deliveryStaffValidate,
   deliveryStaffUpdate,
@@ -12,10 +10,10 @@ import {DeliveryStaffController} from '../controllers/deliveryStaff.controller.j
 
 const router = Router();
 
-router.get('/', authGuard, roleGuard('manager','admin'), DeliveryStaffController.getAll);
-router.get('/:id', authGuard , roleGuard('manager','admin', 'staff'), DeliveryStaffController.getOne);
-router.post('/', roleGuard('staff', 'manager','admin'), validate(deliveryStaffValidate), DeliveryStaffController.createOne);
-router.put('/:id', authGuard, selfGuard('manager', 'admin', 'staff'), validate(deliveryStaffUpdate), DeliveryStaffController.updateOne);
-router.delete('/:id', authGuard, selfGuard('manager','admin', 'staff'), DeliveryStaffController.deleteOne);
+router.get('/', authGuard, roleGuard(['manager','admin']), DeliveryStaffController.getAll);
+router.get('/:id', authGuard , roleGuard(['manager','admin']), DeliveryStaffController.getOne);
+router.post('/', roleGuard(['manager','admin']), validate(deliveryStaffValidate), DeliveryStaffController.createOne);
+router.put('/:id', authGuard, roleGuard(['manager', 'admin']), validate(deliveryStaffUpdate), DeliveryStaffController.updateOne);
+router.delete('/:id', authGuard,roleGuard(['manager','admin']), DeliveryStaffController.deleteOne);
 
 export { router as deliveryStaffRouter };
