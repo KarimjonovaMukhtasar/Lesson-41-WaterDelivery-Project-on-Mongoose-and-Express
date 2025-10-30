@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { validate } from '../middleware/validations.js';
 import { authGuard} from '../middleware/authGuard.js';
 import { roleGuard } from '../middleware/roleGuard.js';
+import { withLogger } from '../utils/withLogger.js';
 import {
   waterProductValidate,
   waterProductUpdate,
@@ -10,10 +11,10 @@ import {WaterProductController} from '../controllers/waterProduct.controller.js'
 
 const router = Router();
 
-router.get('/',  roleGuard(['manager', 'admin', 'staff', 'customer']), WaterProductController.getAll);
-router.get('/:id',  roleGuard(['manager', 'admin', 'staff', 'customer']), WaterProductController.getOne);
-router.post('/', authGuard, roleGuard(['manager', 'admin']), validate(waterProductValidate), WaterProductController.createOne);
-router.put('/:id', authGuard, roleGuard(['manager', 'admin']), validate(waterProductUpdate), WaterProductController.updateOne);
-router.delete('/:id', authGuard, roleGuard(['manager', 'admin']), WaterProductController.deleteOne);
+router.get('/',  roleGuard(['manager', 'admin', 'staff', 'customer']), withLogger(WaterProductController.getAll, `WaterProductController.getAll`));
+router.get('/:id',  roleGuard(['manager', 'admin', 'staff', 'customer']), withLogger(WaterProductController.getOne, `WaterProductController.getOne`));
+router.post('/', authGuard, roleGuard(['manager', 'admin']), validate(waterProductValidate), withLogger(WaterProductController.createOne, `WaterProductController.createOne`));
+router.put('/:id', authGuard, roleGuard(['manager', 'admin']), validate(waterProductUpdate), withLogger(WaterProductController.updateOne, `WaterProductController.updateOne`));
+router.delete('/:id', authGuard, roleGuard(['manager', 'admin']), withLogger(WaterProductController.deleteOne,`WaterProductController.deleteOne`));
 
 export { router as waterProductRouter };

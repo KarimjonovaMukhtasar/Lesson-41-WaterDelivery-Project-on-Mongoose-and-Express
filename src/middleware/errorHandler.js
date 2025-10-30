@@ -1,8 +1,17 @@
-export const errorHandler = (req, res, error) => {
-  console.error(error.stack);
+import logger from "./utils/logger.js"
+
+export const errorHandler = (req, res, err) => {
+   logger.error("Unhandled error", {
+    message: err.message,
+    stack: err.stack,
+    path: req.path,
+    method: req.method,
+    requestId: req.id,
+    userId: req.user?.id,
+  });
   return res
-    .status(error.status || 500)
+    .status(err.status || 500)
     .json({
       success: false, 
-      message: error.message || `INTERNAL SERVER ERROR!`, });
+      message: err.message || `INTERNAL SERVER ERROR!`, });
 };

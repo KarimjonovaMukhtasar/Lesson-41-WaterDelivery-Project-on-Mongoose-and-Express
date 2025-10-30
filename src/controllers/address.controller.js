@@ -1,5 +1,7 @@
 import AddressModel from '../models/address.model.js';
 import { ApiError } from '../helper/errorMessage.js';
+import {logger} from "../utils/logger.js"
+
 export const AddressController = {
   getAll: async (req, res, next) => {
     try {
@@ -29,6 +31,7 @@ export const AddressController = {
           .sort({ createdAt: -1 }),
         model.countDocuments(query),
       ]);
+      logger.info(`SUCCESSFULLY RETRIEVING THE DATA`)
       return res.status(200).json({
         success: true,
         message: `RETRIEVED ALL DATA SUCCESSFULLY!`,
@@ -48,6 +51,7 @@ export const AddressController = {
       const { id } = req.params;
       const data = await model.findOne({ _id: id, customer_id: req.user.id });
       if (!data) {
+        logger.warn(`ADDRESS ID IS INCORRECT`)
         return next(new ApiError(404, `NOT FOUND SUCH AN ID!`));
       }
       return res.status(200).json({
