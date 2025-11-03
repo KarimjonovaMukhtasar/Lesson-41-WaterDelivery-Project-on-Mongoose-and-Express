@@ -38,5 +38,5 @@ export const registerValidate = z
       .string()
       .regex(/^[0-9a-fA-F]{24}$/, 'Invalid district ID')
       .optional(),
-    role: z.enum(['staff']).optional()
+    role: z.enum(['staff', 'customer']).optional()
   });

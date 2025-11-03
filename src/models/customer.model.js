@@ -8,8 +8,10 @@ const customerSchema = new Schema(
     phone: { type: String, required: true },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    role: {type: String,  enum: ['customer'],  default: 'customer'},
-    isActive: {type: boolean,  default: false}
+    role: {type: String,  enum: ['customer', 'staff', 'admin', 'manager'],  default: 'customer'},
+    isActive: {type: boolean,  default: false},
+    accessToken: {type: String, trim: true},
+    refreshToken: {type: String, trim: true}
   },
   { timestamps: true },
 );

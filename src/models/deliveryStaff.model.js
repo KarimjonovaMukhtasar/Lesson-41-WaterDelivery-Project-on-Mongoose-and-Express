@@ -13,7 +13,9 @@ const deliveryStaffSchema = new Schema(
     },
     email: { type: String, required: true },
     password: { type: String, required: true },
-    role: {type: String,  enum: ['staff'],  default: 'staff'}
+    role: { type: String, enum: ['staff'], default: 'staff' },
+    accessToken: { type: String, trim: true },
+    refreshToken: { type: String, trim: true },
   },
   { timestamps: true },
 );
