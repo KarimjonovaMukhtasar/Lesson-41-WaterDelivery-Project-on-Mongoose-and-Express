@@ -4,8 +4,7 @@ const districtSchema = new Schema({
   name: { type: String, required: true },
   customer_id: {
         type: Schema.Types.ObjectId,
-        ref: 'customer',
-        required: true,
+        ref: 'customer'
       }
 },{timestamps: true });
 

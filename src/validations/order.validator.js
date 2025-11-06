@@ -1,7 +1,7 @@
 import { z } from 'zod';
  const orderItemValidate = z
   .object({
-    order_id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid order ID'),
+    order_id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid order ID').optional(),
     product_id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid product ID'),
     quantity: z.number().positive('Must be greater than 0'),
     total_price: z
@@ -9,12 +9,10 @@ import { z } from 'zod';
       .positive('Must be greater than 0')
       .min(0.01)
       .optional(),
-  })
-  .strict();
+  });
 
  const orderValidate = z
   .object({
-    customer_id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid customer ID'),
     delivery_staff_id: z
       .string()
       .regex(/^[0-9a-fA-F]{24}$/, 'Invalid delivery staff ID'),
@@ -23,9 +21,8 @@ import { z } from 'zod';
       .min(new Date('2020-01-01'), 'Too early')
       .max(new Date(), 'Cannot be in future')
       .optional(),
-    status: z.enum(['pending', 'ordered', 'cancelled']),
-  })
-  .strict();
+    status: z.enum(['pending', 'ordered', 'cancelled']).optional(),
+  });
 
 export const orderWithItemsValidate = z.object({
   order: orderValidate,
@@ -36,10 +33,6 @@ export const orderWithItemsValidate = z.object({
 
 const orderUpdate = z
   .object({
-    customer_id: z
-      .string()
-      .regex(/^[0-9a-fA-F]{24}$/, 'Invalid customer ID')
-      .optional(),
     delivery_staff_id: z
       .string()
       .regex(/^[0-9a-fA-F]{24}$/, 'Invalid delivery staff ID')

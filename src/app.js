@@ -1,8 +1,10 @@
 import express from 'express';
 import { errorHandler } from './middleware/errorHandler.js';
 import { dbconnect } from './db/index.js';
+// import mongoose from "mongoose"
 import { config } from './config/index.js';
 import morgan from './middleware/requestLogger.js';
+import cookieParser from "cookie-parser"
 import requestId from './middleware/requestId.js';
 import dotenv from 'dotenv';
 import MainRouter from './routers/index.js';
@@ -12,6 +14,7 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(cookieParser())
 app.use(morgan);
 app.use(requestId)
 app.use('/', MainRouter);

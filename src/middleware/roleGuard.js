@@ -3,8 +3,8 @@ import { ApiError } from '../helper/errorMessage.js';
 export const roleGuard = (...roles) => {
   return (req, res, next) => {
     try {
-      if(!req.user || !req.user.role){
-        return next(new ApiError(401, `UNAUTHORIZED, USER INFO IS MISSING!`))
+      if(!req.user || !req.user.role){ 
+        return next(new ApiError(401, `UNAUTHORIZED, PLEASE RESGISTER AND VERIY YOUR OTP!`))
       }
       const userRole = req.user.role;
       if (!roles.includes(userRole)) {
@@ -12,7 +12,6 @@ export const roleGuard = (...roles) => {
       }
       next();
     } catch (error) {
-      console.log(error.message);
       return next(new ApiError(500, `ERROR WITH ROLE GUARD!`));
     }
   };

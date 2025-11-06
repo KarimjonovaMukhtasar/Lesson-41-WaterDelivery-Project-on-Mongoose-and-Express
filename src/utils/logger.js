@@ -8,49 +8,57 @@ import 'winston-daily-rotate-file';
 //   maxFiles: '14d',
 // });
 
-const errorFilter = winston.format((info, opts) => {
-  return info.level === 'error' ? info : false;
-});
+// const errorFilter = winston.format((info, opts) => {
+//   return info.level === 'error' ? info : false;
+// });
 
-const infoFilter = winston.format((info, opts) => {
-  return info.level === 'info' ? info : false;
-});
+// const infoFilter = winston.format((info, opts) => {
+//   return info.level === 'info' ? info : false;
+// });
 
-const logger = winston.createLogger({
+export const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
-//    defaultMeta: {
-//     service: 'service-b',
-//   },
-  format: combine(
-    colorize({ all: true }),
-    timestamp({
-      format: 'YYYY-MM-DD hh:mm:ss.SSS A',
-    }),
-    align(),
-    printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`),
-  ),
-  //   transports: [new winston.transports.Console()],
   transports: [
     new winston.transports.File({
-      filename: 'combined.log',
+      filename: 'logs/combined.log',
+      format: combine(
+        timestamp({ format: 'YYYY-MM-DD hh:mm:ss.SSS A' }),
+        json(),
+      ),
     }),
-    new winston.transports.Console(),
+    new winston.transports.Console({
+      format: combine(
+        colorize({ all: true }),
+        timestamp({
+          format: 'YYYY-MM-DD hh:mm:ss.SSS A',
+        }),
+        align(),
+        printf((info) => `[${info.timestamp}] ${info.level}: ${info.message}`),
+      ),
+    }),
     new winston.transports.File({
-      filename: 'errors.log',
+      filename: 'logs/errors.log',
       level: 'error',
-      format: combine(errorFilter(), timestamp(), json()),
+      format: combine(
+        timestamp({ format: 'YYYY-MM-DD hh:mm:ss.SSS A' }),
+        json(),
+      ),
     }),
     new winston.transports.File({
       filename: 'info.log',
       level: 'info',
-      format: combine(infoFilter(), timestamp(), json()),
+      format: combine(
+        timestamp({ format: 'YYYY-MM-DD hh:mm:ss.SSS A' }),
+        json(),
+      ),
     }),
   ],
+
   exceptionHandlers: [
-    new winston.transports.File({ filename: 'exception.log' }),
+    new winston.transports.File({ filename: 'logs/exception.log' }),
   ],
   rejectionHandlers: [
-    new winston.transports.File({ filename: 'rejections.log' }),
+    new winston.transports.File({ filename: 'logs/rejections.log' }),
   ],
 });
 

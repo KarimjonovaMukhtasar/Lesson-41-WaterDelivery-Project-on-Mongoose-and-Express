@@ -2,25 +2,25 @@ import { Schema, model } from 'mongoose';
 import bcrypt from 'bcrypt';
 import { boolean } from 'zod';
 
-const customerSchema = new Schema(
+const adminSchema = new Schema(
   {
     name: { type: String, required: true },
     phone: { type: String, required: true },
     email: { type: String, required: true },
-    password: { type: String, required: true, select: false },
-    role: { type: String, enum: ['customer', 'staff'], default: 'customer' },
-    isActive: { type: boolean, default: false },
+    password: { type: String, required: true , select: false },
+    role: {type: String,  enum: ['admin'],  default: 'admin'},
+    isActive: {type: boolean,  default: false}
   },
   { timestamps: true },
 );
 
-customerSchema.pre('save', async function (next) {
+adminSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 10);
   next();
 });
 
-customerSchema.pre('findByIdAndUpdate', async function (next) {
+adminSchema.pre('findByIdAndUpdate', async function (next) {
   if (!this.isModified('password')) return next();
   const update = this.getUpdate();
   if (update.password) {
@@ -29,11 +29,11 @@ customerSchema.pre('findByIdAndUpdate', async function (next) {
   next();
 });
 
-customerSchema.methods.comparePassword = async function (customerPassword) {
-  const isValidPassword = await bcrypt.compare(customerPassword, this.password);
+adminSchema.methods.comparePassword = async function (adminPassword) {
+  const isValidPassword = await bcrypt.compare(adminPassword, this.password);
   return isValidPassword;
 };
 
-const CustomerModel = model('customer', customerSchema);
+const AdminModel = model('admin', adminSchema);
 
-export default CustomerModel;
+export default AdminModel;

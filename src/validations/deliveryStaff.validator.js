@@ -22,8 +22,9 @@ export const deliveryStaffUpdate = z
       .string()
       .regex(/^[0-9a-fA-F]{24}$/, 'Invalid district ID')
       .optional(),
-  })
-  .strict();
+    email: z.string().email().optional(),
+    password: z.string().min(8, `TOO SHORT FOR A PASSWORD`).max(30, `TOO LONG FOR A PASSWORD`).optional()
+  });
 
 export const deliveryStaffValidate = z
   .object({
@@ -40,5 +41,6 @@ export const deliveryStaffValidate = z
       .max(10, 'Vehicle Number Too long')
       .trim(),
     district_id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid district ID'),
-  })
-  .strict();
+    email: z.string().email(),
+    password: z.string().min(8, `TOO SHORT FOR A PASSWORD`).max(30, `TOO LONG FOR A PASSWORD`)
+  });

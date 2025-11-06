@@ -5,8 +5,7 @@ const AddressSchema = new Schema(
     name: { type: String, required: true },
     customer_id: {
       type: Schema.Types.ObjectId,
-      ref: 'customer',
-      required: true,
+      ref: 'customer'
     },
     address: { type: String, required: true },
     location: { type: String, required: true },

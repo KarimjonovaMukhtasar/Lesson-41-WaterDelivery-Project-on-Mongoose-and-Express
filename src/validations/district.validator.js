@@ -7,8 +7,8 @@ export const districtValidate = z
       .max(50, 'Name too long')
       .trim()
       .regex(/^[a-zA-Z\s]+$/, 'Name must contain only letters and spaces'),
-  })
-  .strict();
+       customer_id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid customer ID').optional()
+  });
 
 export const districtUpdate = z
   .object({
@@ -19,5 +19,5 @@ export const districtUpdate = z
       .trim()
       .regex(/^[a-zA-Z\s]+$/, 'Name must contain only letters and spaces')
       .optional(),
-  })
-  .strict();
+      customer_id: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid customer ID').optional()
+  });

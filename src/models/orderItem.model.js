@@ -12,13 +12,10 @@ const OrderItemSchema = new Schema(
     total_price: { type: Number, default: 0.01 },
     customer_id: {
       type: Schema.Types.ObjectId,
-      ref: 'customer',
-      required: true,
+      ref: 'customer'
     },
   },
   { timestamps: true },
 );
 
-const OrderItemModel = model('orderItem', OrderItemSchema);
-
-export default OrderItemModel;
+export const OrderItemModel = model('orderItem', OrderItemSchema);

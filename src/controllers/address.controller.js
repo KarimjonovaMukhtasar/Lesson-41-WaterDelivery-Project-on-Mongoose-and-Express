@@ -5,13 +5,13 @@ import logger from "../utils/logger.js"
 export const AddressController = {
   getAll: async (req, res, next) => {
     try {
-      const model = AddressModel;
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
       const search = req.query.search || '';
       const skip = (page - 1) * limit;
-      const fields = Object.keys(model.schema.paths).filter(
-        (f) => !['_id', '__v', 'createdAt', 'updatedAt'].includes(f),
+      const fields = Object.keys(AddressModel.schema.paths).filter(
+        (f) => !['_id', '__v', 'createdAt', 'updatedAt'].includes(f)  &&
+          AddressModel.schema.paths[f].instance === 'String',
       );
       const query = search
         ? {
@@ -24,12 +24,12 @@ export const AddressController = {
         query.customer_id = req.user.id;
       }
       const [data, total] = await Promise.all([
-        model
+        AddressModel
           .find({ ...query})
           .skip(skip)
           .limit(limit)
           .sort({ createdAt: -1 }),
-        model.countDocuments(query),
+        AddressModel.countDocuments(query),
       ]);
       logger.info(`SUCCESSFULLY RETRIEVING THE DATA`)
       return res.status(200).json({
@@ -47,9 +47,8 @@ export const AddressController = {
 
   getOne: async (req, res, next) => {
     try {
-      const model = AddressModel;
       const { id } = req.params;
-      const data = await model.findOne({ _id: id, customer_id: req.user.id });
+      const data = await AddressModel.findOne({ _id: id, customer_id: req.user.id });
       if (!data) {
         logger.warn(`ADDRESS ID IS INCORRECT`)
         return next(new ApiError(404, `NOT FOUND SUCH AN ID!`));
@@ -66,9 +65,9 @@ export const AddressController = {
 
   createOne: async (req, res, next) => {
     try {
-      const model = AddressModel;
       const body = req.validatedData;
-      const data = await model.create(body);
+      body.customer_id = req.user._id
+      const data = await AddressModel.create(body);
       return res.status(201).json({
         success: true,
         message: `CREATED SUCCESSFULLY!`,
@@ -81,10 +80,9 @@ export const AddressController = {
 
   updateOne: async (req, res, next) => {
     try {
-      const model = AddressModel;
       const { id } = req.params;
       const body = req.validatedData;
-      const data = await model.findByIdAndUpdate(id, body, { new: true });
+      const data = await AddressModel.findByIdAndUpdate(id, body, { new: true });
       if (!data) {
         return next(new ApiError(404, `NOT FOUND SUCH AN ID!`));
       }
@@ -100,9 +98,8 @@ export const AddressController = {
 
   deleteOne: async (req, res, next) => {
     try {
-      const model = AddressModel;
       const { id } = req.params;
-      const data = await model.findByIdAndDelete({ _id: id });
+      const data = await AddressModel.findByIdAndDelete({ _id: id });
       if (!data) {
         return next(new ApiError(404, `NOT FOUND SUCH AN ID!`));
       }

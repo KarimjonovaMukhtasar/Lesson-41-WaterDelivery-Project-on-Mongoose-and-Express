@@ -11,10 +11,10 @@ import {WaterProductController} from '../controllers/waterProduct.controller.js'
 
 const router = Router();
 
-router.get('/',  roleGuard(['manager', 'admin', 'staff', 'customer']), withLogger(WaterProductController.getAll, `WaterProductController.getAll`));
-router.get('/:id',  roleGuard(['manager', 'admin', 'staff', 'customer']), withLogger(WaterProductController.getOne, `WaterProductController.getOne`));
-router.post('/', authGuard, roleGuard(['manager', 'admin']), validate(waterProductValidate), withLogger(WaterProductController.createOne, `WaterProductController.createOne`));
-router.put('/:id', authGuard, roleGuard(['manager', 'admin']), validate(waterProductUpdate), withLogger(WaterProductController.updateOne, `WaterProductController.updateOne`));
-router.delete('/:id', authGuard, roleGuard(['manager', 'admin']), withLogger(WaterProductController.deleteOne,`WaterProductController.deleteOne`));
+router.get('/',   withLogger(WaterProductController.getAll, `WaterProductController.getAll`));
+router.get('/:id',  withLogger(WaterProductController.getOne, `WaterProductController.getOne`));
+router.post('/', authGuard, roleGuard('manager', 'admin'), validate(waterProductValidate), withLogger(WaterProductController.createOne, `WaterProductController.createOne`));
+router.put('/:id', authGuard, roleGuard('manager', 'admin'), validate(waterProductUpdate), withLogger(WaterProductController.updateOne, `WaterProductController.updateOne`));
+router.delete('/:id', authGuard, roleGuard('manager', 'admin'), withLogger(WaterProductController.deleteOne,`WaterProductController.deleteOne`));
 
 export { router as waterProductRouter };

@@ -4,13 +4,13 @@ import { ApiError } from '../helper/errorMessage.js';
 export const PaymentController = {
   getAll: async (req, res, next) => {
     try {
-      const model = PaymentModel;
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
       const search = req.query.search || '';
       const skip = (page - 1) * limit;
-      const fields = Object.keys(model.schema.paths).filter(
-        (f) => !['_id', '__v', 'createdAt', 'updatedAt'].includes(f),
+      const fields = Object.keys(PaymentModel.schema.paths).filter(
+        (f) => !['_id', '__v', 'createdAt', 'updatedAt'].includes(f) &&
+          PaymentModel.schema.paths[f].instance === 'String' ,
       );
       const query = search
         ? {
@@ -19,20 +19,19 @@ export const PaymentController = {
             })),
           }
         : {};
-      if(req.user.role === 'customer'){
-        query.customer_id = req.user.id
-      }
       const [data, total] = await Promise.all([
-        model.find(query).skip(skip).limit(limit).sort({ createdAt: -1 }),
-        model.countDocuments(query),
+        PaymentModel.find(query).skip(skip).limit(limit).sort({ createdAt: -1 }),
+        PaymentModel.countDocuments(query),
       ]);
       return res.status(200).json({
         success: true,
         message: `RETRIEVED ALL DATA SUCCESSFULLY!`,
         data,
-        total,
         limit,
         page,
+      total,
+        skip
+
       });
     } catch (error) {
       return next(error);
@@ -41,9 +40,8 @@ export const PaymentController = {
 
   getOne : async (req, res, next) => {
     try {
-      const model = PaymentModel;
       const { id } = req.params;
-      const data = await model.findOne({ _id: id });
+      const data = await PaymentModel.findOne({ _id: id });
       if (!data) {
         return next(new ApiError(404,`NOT FOUND SUCH AN ID` ))
       }
@@ -59,9 +57,10 @@ export const PaymentController = {
    
   createOne : async (req, res, next) => {
     try {
-      const model = PaymentModel;
       const body = req.validatedData;
-      const data = await model.create(body);
+      const data = await PaymentModel.create(body);
+      data.customer_id = req.user._id
+      await data.save()
       return res.status(201).json({
         success: true,
         message: `CREATED SUCCESSFULLY!`,
@@ -74,10 +73,9 @@ export const PaymentController = {
   
   updateOne : async (req, res, next) => {
     try {
-      const model = PaymentModel;
       const { id } = req.params;
       const body = req.validatedData;
-      const data = await model.findByIdAndUpdate(id, body, { new: true });
+      const data = await PaymentModel.findByIdAndUpdate(id, body, { new: true });
       if (!data) {
         return next(new ApiError(404,`NOT FOUND SUCH AN ID` ))
       }
@@ -93,9 +91,8 @@ export const PaymentController = {
   
   deleteOne : async(req, res, next) => {
     try {
-      const model = PaymentModel;
       const { id } = req.params;
-      const data = await model.findByIdAndDelete({ _id: id });
+      const data = await PaymentModel.findByIdAndDelete({ _id: id });
       if (!data) {
         return next(new ApiError(404,`NOT FOUND SUCH AN ID` ))
       }
